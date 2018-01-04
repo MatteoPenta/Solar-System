@@ -1,0 +1,38 @@
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
+html, body {
+  border: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.instructionText {
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: 300;
+  font-size: 1.5em;
+  letter-spacing: .8pt;
+  position: absolute;
+  bottom: 1%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  opacity: 1;
+
+  transition: opacity .2s ease;
+}
+
+#pauseSpan {
+  transition: opacity 1s ease;
+}
+
+canvas {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+}
+
+.elements {
+  display: none;
+}
