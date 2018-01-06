@@ -1,9 +1,3 @@
-/*
-  TODO
-  * Random movements
-*/
-
-
 /* CANVAS SETUP */
 
 let canvas = document.querySelector('#canvas');
@@ -57,7 +51,15 @@ Mediumrock = function() {
   }
 }
 Bigrock = function() {
+  this.width = 90;
+  this.height = 90;
+  this.x = Math.floor(this.width / 2 + Math.random() * ( canvas.width - 2*this.width ));
+  this.y = Math.floor(this.height / 2 + Math.random() * ( canvas.height - 2*this.height ));
+  this.element = document.querySelector('#bigrock');
 
+  this.update = function(progress) {
+
+  }
 }
 
 // Arrays containing all rocks and stars in the game
@@ -98,7 +100,7 @@ function initializeSetup() {
 
   // BIG ROCKS
   // prepare random number for big rocks (0-1)
-  random =  Math.floor(Math.random());
+  random =  Math.floor(Math.random() * 2);
   if (random > 0) rocks.push(new Bigrock());
 
 }
