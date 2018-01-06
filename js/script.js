@@ -58,7 +58,7 @@ Bigrock = function() {
   this.element = document.querySelector('#bigrock');
 
   this.update = function(progress) {
-
+    
   }
 }
 
