@@ -37,8 +37,8 @@ const mediumrock_const = {
   height: 50
 };
 const bigrock_const = {
-  width: 90,
-  height: 90
+  width: 70,
+  height: 70
 };
 
 
@@ -223,6 +223,8 @@ function draw() {
 
   // Draws every rock and star
   rocks.forEach(rock => {
+    // ctx.setTransform(1, 0, 0, 1, rock.x, rock.y);
+    // ctx.rotate(Math.random(Math.PI/180 * 2));
     ctx.drawImage(rock.element, rock.x, rock.y, rock.width, rock.height);
 
     // ID text used for debugging
