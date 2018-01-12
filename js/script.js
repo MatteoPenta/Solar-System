@@ -16,6 +16,7 @@ function resizeCanvas() {
 }
 
 function redraw() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.rect(0, 0, canvas.width, canvas.height);
   let radGrad = ctx.createRadialGradient((canvas.width / 2), (canvas.height / 2), 150, (canvas.width / 2), (canvas.height / 2), 300);
   radGrad.addColorStop(0, 'rgb(55, 62, 100)');
@@ -24,6 +25,7 @@ function redraw() {
   ctx.fill();
 }
 
+function rand(min,max){return Math.random() * (max ?(max-min) : min) + (max ? min : 0) }
 
 /* GAME LOGIC */
 
@@ -46,13 +48,27 @@ const bigrock_const = {
 function Element(x, y, width, height) {
   this.x = x;
   this.y = y;
+  this.r = rand( Math.PI * 2 );
   this.width = width;
   this.height = height;
+  // variations per frame
+  this.dx = rand( -0.5, 0.5 );
+  this.dy = rand( -0.5, 0.5 );
+  this.dr = rand( -0.1, 0.1 );
+  // xr & yr: current position of element
+  this.xr = 0;
+  this.yr = 0;
   // ID text used for debugging
   this.id = Math.floor(Math.random() * 100);
 }
 Element.prototype.update = function(progress) {
+  // update variables
+  this.x += this.dx;
+  this.y += this.dy;
 
+  this.xr = this.x;
+  this.yr = this.y;
+  this.r += this.dr;
 };
 Element.prototype.isColliding = function(otherElement) {
     // REMEMBER: x and y of element refer to top left corner
@@ -223,18 +239,18 @@ function draw() {
 
   // Draws every rock and star
   rocks.forEach(rock => {
-    // ctx.setTransform(1, 0, 0, 1, rock.x, rock.y);
-    // ctx.rotate(Math.random(Math.PI/180 * 2));
-    ctx.drawImage(rock.element, rock.x, rock.y, rock.width, rock.height);
+    ctx.setTransform(1, 0, 0, 1, rock.xr, rock.yr);
+    ctx.rotate(rock.r);
+    ctx.drawImage(rock.element, -rock.width/2, -rock.height/2, rock.width, rock.height);
 
     // ID text used for debugging
-    ctx.fillStyle = 'white';
-    ctx.font = '10px sans-serif';
-    ctx.fillText(rock.id, rock.x + rock.width/3, rock.y + rock.height + 10);
+    // ctx.fillStyle = 'white';
+    // ctx.font = '10px sans-serif';
+    // ctx.fillText(rock.id, rock.x + rock.width/3, rock.y + rock.height + 10);
 
-    // Border used for debugging
-    ctx.rect(rock.x, rock.y, rock.width, rock.height);
-    ctx.stroke();
+    // // Border used for debugging
+    // ctx.rect(rock.x, rock.y, rock.width, rock.height);
+    // ctx.stroke();
   });
   stars.forEach(star => {
     ctx.drawImage(star.element, star.x, star.y, star.width, star.height);
