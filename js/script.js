@@ -62,13 +62,32 @@ function Element(x, y, width, height) {
   this.id = Math.floor(Math.random() * 100);
 }
 Element.prototype.update = function(progress) {
-  // update variables
+  // update movement variables
   this.x += this.dx;
   this.y += this.dy;
 
   this.xr = this.x;
   this.yr = this.y;
-  this.r += this.dr;
+  this.r += this.dr * 0.2;
+
+  // check collision with window borders
+  if (this.x + this.width / 2 >= canvas.width ||
+      this.x - this.width / 2 <= 0) {
+    this.dx *= -1;
+  }
+  if (this.y + this.height / 2>= canvas.height ||
+      this.y - this.height / 2 <= 0) {
+    this.dy *= -1;
+  }
+
+  // check collision with other elements
+  // TODO Fix this
+  
+  if (checkElementCollisions(this)) {
+    this.dx *= -0.8;
+    this.dy *= -0.8;
+  }
+
 };
 Element.prototype.isColliding = function(otherElement) {
     // REMEMBER: x and y of element refer to top left corner
@@ -159,7 +178,7 @@ function initializeSetup() {
     let randomCoord = 0;
     do {
       randomCoord = getRandomCoord(smallrock_const);
-    } while ( checkCollisions(randomCoord, smallrock_const) );
+    } while ( checkCoordCollisions(randomCoord, smallrock_const) );
 
     // Then, create a new rock with the final coords
     rocks.push(new Smallrock(randomCoord.x, randomCoord.y));
@@ -174,7 +193,7 @@ function initializeSetup() {
     let randomCoord = 0;
     do {
       randomCoord = getRandomCoord(mediumrock_const);
-    } while ( checkCollisions(randomCoord, mediumrock_const) );
+    } while ( checkCoordCollisions(randomCoord, mediumrock_const) );
 
     // Then, create a new rock with the final coords
     rocks.push(new Mediumrock(randomCoord.x, randomCoord.y));
@@ -189,7 +208,7 @@ function initializeSetup() {
     let randomCoord = 0;
     do {
       randomCoord = getRandomCoord(bigrock_const);
-    } while ( checkCollisions(randomCoord, bigrock_const) );
+    } while ( checkCoordCollisions(randomCoord, bigrock_const) );
 
     // Then, create a new rock with the final coords
     rocks.push(new Bigrock(randomCoord.x, randomCoord.y));
@@ -208,9 +227,15 @@ function getRandomCoord(element_const) {
   return randomCoord;
 }
 
+// COLLISION DETECTION FUNCTIONS
+function checkElementCollisions(element) {
+  if (rocks.some(r => element.isColliding(r)))  return true;
+  if (stars.some(s => element.isColliding(s)))  return true;
+}
+
 // Given a set of coordinates, creates a sample Element and checks
 // if it collides with every other element in the canvas
-function checkCollisions(coords, element_const) {
+function checkCoordCollisions(coords, element_const) {
   let sampleElement = new Element(coords.x, coords.y, element_const.width, element_const.height);
 
   // Checks for every collision. If it doesn't collide with
@@ -220,6 +245,7 @@ function checkCollisions(coords, element_const) {
 
   return false;
 }
+
 
 function update(progress) {
 
@@ -248,9 +274,9 @@ function draw() {
     // ctx.font = '10px sans-serif';
     // ctx.fillText(rock.id, rock.x + rock.width/3, rock.y + rock.height + 10);
 
-    // // Border used for debugging
-    // ctx.rect(rock.x, rock.y, rock.width, rock.height);
-    // ctx.stroke();
+
+    // Border used for debugging
+    // ctx.strokeRect(rock.x, rock.y, rock.width, rock.height);
   });
   stars.forEach(star => {
     ctx.drawImage(star.element, star.x, star.y, star.width, star.height);
