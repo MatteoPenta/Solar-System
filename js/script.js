@@ -3,15 +3,19 @@
 let canvas = document.querySelector('#canvas');
 let ctx = canvas.getContext('2d');
 
+// canvas dimensions
+const canvasWidth = window.innerWidth - 4;
+const canvasHeight = window.innerHeight - 4;
+
 initialize();
 
 function initialize() {
-  resizeCanvas();
+  resizeCanvas(canvasWidth, canvasHeight);
 }
 
-function resizeCanvas() {
-  canvas.width = 900;
-  canvas.height = 600;
+function resizeCanvas(width, height) {
+  canvas.width = width;
+  canvas.height = height;
   redraw();
 }
 
@@ -52,8 +56,8 @@ function Element(x, y, width, height) {
   this.width = width;
   this.height = height;
   // variations per frame
-  this.dx = rand( -0.5, 0.5 );
-  this.dy = rand( -0.5, 0.5 );
+  this.dx = rand( -0.6, 0.6 );
+  this.dy = rand( -0.6, 0.6 );
   this.dr = rand( -0.1, 0.1 );
   // xr & yr: current position of element
   this.xr = 0;
@@ -82,7 +86,7 @@ Element.prototype.update = function(progress) {
 
   // check collision with other elements
   // TODO Fix this
-  
+
   if (checkElementCollisions(this)) {
     this.dx *= -0.8;
     this.dy *= -0.8;
@@ -171,8 +175,8 @@ function initializeSetup() {
 
   // SMALL ROCKS
   // prepare random number for small rocks (3-5)
-  random = 3 + Math.floor(Math.random() * 3);
-  for (let i = 0; i <= random - 1; i++) {
+  random = Math.round(rand(5, 10));
+  for (let i = 0; i < random; i++) {
     // Keep creating random coordinates until they don't collide
     // with anything else in the canvas
     let randomCoord = 0;
@@ -186,8 +190,8 @@ function initializeSetup() {
 
   // MEDIUM ROCKS
   // prepare random number for medium rocks (1-3)
-  random = 1 + Math.floor(Math.random() * 3);
-  for (let i = 0; i <= random - 1; i++) {
+  random = Math.round(rand(3, 6));
+  for (let i = 0; i < random; i++) {
     // Keep creating random coordinates until they don't collide
     // with anything else in the canvas
     let randomCoord = 0;
@@ -200,9 +204,9 @@ function initializeSetup() {
   }
 
   // BIG ROCKS
-  // prepare random number for big rocks (0-1)
-  random =  Math.floor(Math.random() * 2);
-  if (random > 0) {
+  // prepare random number for big rocks (0-3)
+  random = Math.round(rand(0, 3));
+  for (let i = 0; i < random; i++) {
     // Keep creating random coordinates until they don't collide
     // with anything else in the canvas
     let randomCoord = 0;
@@ -303,32 +307,36 @@ function loop(timestamp) {
 function pauseGame(e) {
   if (e.keyCode === 32) {
     let pauseSpan = document.querySelector('#pauseSpan');
+
     if (isRunning) {
       isRunning = false;
       pauseSpan.innerHTML = "resume";
+      changeInstructionsOpacity(1, 0);
     }
     else {
       isRunning = true;
       pauseSpan.innerHTML = "pause";
+      changeInstructionsOpacity(0, 3000);
     }
   }
 }
 
-function handleResize() {
-
-  // updates the instruction text
+function changeInstructionsOpacity(value, timeout) {
   let instructionText = document.querySelector('.instructionText');
-  if (window.innerHeight < canvas.height + 200) {
-    instructionText.style.opacity = 0;
-  } else {
-    instructionText.style.opacity = 1;
-  }
+  setTimeout(() => {
+    instructionText.style.opacity = value;
+  }, timeout);
 }
+
+// function handleResize() {
+//   // updates the instruction text
+//   let instructionText = document.querySelector('.instructionText');
+// }
 
 function handleEvents() {
 
   window.addEventListener('keydown', pauseGame);
-  window.addEventListener('resize', handleResize);
+  // window.addEventListener('resize', handleResize);
 
 }
 
@@ -340,6 +348,9 @@ function start() {
   initializeSetup();
   window.requestAnimationFrame(loop);
   handleEvents();
+
+  // hides the instructions after 3 sec
+  changeInstructionsOpacity(0, 3000);
 }
 
 
