@@ -22,9 +22,9 @@ function resizeCanvas(width, height) {
 function redraw() {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.rect(0, 0, canvas.width, canvas.height);
-  let radGrad = ctx.createRadialGradient((canvas.width / 2), (canvas.height / 2), 150, (canvas.width / 2), (canvas.height / 2), 300);
-  radGrad.addColorStop(0, 'rgb(55, 62, 100)');
-  radGrad.addColorStop(1, 'rgb(47, 52, 86)');
+  let radGrad = ctx.createRadialGradient((canvas.width / 2), (canvas.height / 2), 180, (canvas.width / 2), (canvas.height / 2), 550);
+  radGrad.addColorStop(0, 'hsl(231, 30%, 32%)');
+  radGrad.addColorStop(1, 'hsl(232, 35%, 25%)');
   ctx.fillStyle = radGrad;
   ctx.fill();
 }
